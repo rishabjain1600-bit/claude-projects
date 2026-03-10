@@ -1,0 +1,48 @@
+{
+  "company": "SampleCompany",
+  "experience": [
+    {
+      "company": "Current Employer",
+      "location": "City, State",
+      "roles": [
+        {
+          "title": "Senior Product Manager",
+          "start": "Month Year",
+          "end": "Present",
+          "bullets": [
+            "Lead bullet most relevant to the target JD — reordered by Claude based on keyword scoring",
+            "Second bullet with quantified outcome — $XM impact or X% growth",
+            "Third bullet demonstrating technical depth or cross-functional leadership",
+            "Fourth bullet showing 0-to-1 or innovation work"
+          ]
+        },
+        {
+          "title": "Associate Product Manager",
+          "start": "Month Year",
+          "end": "Month Year",
+          "bullets": [
+            "Most relevant bullet for this role — moved first by Claude",
+            "Second bullet with business impact metric",
+            "Third bullet on stakeholder management or technical execution"
+          ]
+        }
+      ]
+    },
+    {
+      "company": "Previous Employer",
+      "location": "City, State",
+      "roles": [
+        {
+          "title": "Role Title",
+          "start": "Month Year",
+          "end": "Month Year",
+          "bullets": [
+            "Relevant bullet one",
+            "Relevant bullet two"
+          ]
+        }
+      ]
+    }
+  ],
+  "skills": "Skill 1, Skill 2, Skill 3 — reordered by Claude to surface JD-relevant skills first"
+}

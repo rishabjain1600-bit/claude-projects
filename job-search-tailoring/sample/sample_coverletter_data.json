@@ -1,0 +1,12 @@
+{
+  "company": "SampleCompany",
+  "role_title": "Product Manager",
+  "paragraphs": {
+    "opening": "A genuine, personal opening paragraph written by Claude — not a JD echo. Connects your authentic interest in the company's mission or space to why you want to build there. One vivid, specific sentence beats three generic ones.",
+    "para2": "Core experience paragraph — your most relevant role, 0-to-1 work, and customer impact. Claude connects this to the specific product domain in the JD.",
+    "para3": "Technical and analytical depth paragraph — SQL, data-driven decisions, specific quantified outcomes (e.g. $25M incremental spend). Claude surfaces the evidence that maps to required qualifications.",
+    "para4": "Second major achievement — cross-functional leadership, a product launch with a revenue or operational outcome.",
+    "para5": "Reflection on collaboration, PM philosophy, and fit with the company's culture or values. Claude tailors this to the company's specific ethos (open-source, startup, enterprise, etc.).",
+    "closing": "Closing line restating the opportunity and inviting a conversation. Company name substituted by Claude."
+  }
+}

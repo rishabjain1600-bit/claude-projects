@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @page {
+    size: 612pt 792pt;
+    margin: 0;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'TimesNewRomanPSMT', 'Times New Roman', Times, serif;
+    font-size: 11pt;
+    line-height: 13.8pt;
+    width: 612pt;
+    height: 792pt;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* ── HEADER (identical to resume) ── */
+  #header {
+    position: absolute;
+    top: 36pt;
+    left: 0;
+    right: 0;
+    height: 28pt;
+  }
+
+  #name {
+    position: absolute;
+    left: 41pt;
+    top: 0;
+    font-size: 16pt;
+    font-weight: bold;
+    line-height: 1;
+  }
+
+  #contact {
+    position: absolute;
+    right: 41pt;
+    top: 4pt;
+    font-size: 10.5pt;
+    text-align: right;
+    line-height: 13pt;
+  }
+
+  #header-rule {
+    position: absolute;
+    top: 68pt;
+    left: 36pt;
+    right: 36pt;
+    border: none;
+    border-top: 0.75pt solid #808080;
+  }
+
+  /* ── BODY TEXT BLOCK ── */
+  #content {
+    position: absolute;
+    top: 86pt;
+    left: 90pt;
+    width: 438pt;
+    bottom: 54pt;
+  }
+
+  .date-line {
+    font-size: 11pt;
+    line-height: 13.8pt;
+    margin-bottom: 13.8pt;
+  }
+
+  .salutation {
+    font-size: 11pt;
+    line-height: 13.8pt;
+    margin-bottom: 10pt;
+  }
+
+  .paragraph {
+    font-size: 11pt;
+    line-height: 13.8pt;
+    margin-bottom: 10pt;
+    text-align: left;
+  }
+
+  .closing-block {
+    margin-top: 4pt;
+  }
+
+  .closing-line {
+    font-size: 11pt;
+    line-height: 13.8pt;
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<!-- Replace the name and contact info below with your own details -->
+<div id="header">
+  <div id="name">[Your Full Name]</div>
+  <div id="contact">
+    [your.email@gmail.com] | [(555) 555-5555]<br>
+    linkedin.com/in/[yourhandle]/
+  </div>
+</div>
+<hr id="header-rule">
+
+<!-- BODY -->
+<div id="content">
+
+  <div class="salutation">Dear Hiring Manager,</div>
+
+  {% if paragraphs.opening %}
+  <div class="paragraph">{{ paragraphs.opening }}</div>
+  {% endif %}
+
+  {% if paragraphs.para2 %}
+  <div class="paragraph">{{ paragraphs.para2 }}</div>
+  {% endif %}
+
+  {% if paragraphs.para3 %}
+  <div class="paragraph">{{ paragraphs.para3 }}</div>
+  {% endif %}
+
+  {% if paragraphs.para4 %}
+  <div class="paragraph">{{ paragraphs.para4 }}</div>
+  {% endif %}
+
+  {% if paragraphs.para5 %}
+  <div class="paragraph">{{ paragraphs.para5 }}</div>
+  {% endif %}
+
+  {% if paragraphs.closing %}
+  <div class="paragraph">{{ paragraphs.closing }}</div>
+  {% endif %}
+
+  <div class="closing-block">
+    <div class="closing-line">Warm regards,</div>
+    <div class="closing-line">[Your Name]</div>
+  </div>
+
+</div>
+
+</body>
+</html>

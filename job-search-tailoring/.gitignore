@@ -1,0 +1,17 @@
+# Generated output — PDFs and company-specific JSON data files
+output/
+
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Node / web
+node_modules/
+.next/
+
+# Environment
+.env
