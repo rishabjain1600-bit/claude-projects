@@ -37,26 +37,28 @@ SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
 # ---------------------------------------------------------------------------
 
 RESEARCH_PROMPT = """\
-Today is {date}. You are an ultra-concise news editor. Every word must earn its place.
+Today is {date}. You are an editor for a busy, smart reader who has 2 minutes.
 
-Search the web for today's news and return exactly:
+Search the web for today's news. Be ruthlessly selective — only include stories with real consequence.
 
-1. GLOBAL NEWS — 5 stories
-2. BUSINESS & MARKETS — 5 stories + market snapshot (S&P 500, Nasdaq, Bitcoin)
-3. NYC NEWS — 4 stories
+Return exactly:
+1. TOP STORIES — the 3 most important things happening in the world today, any topic. If a story\
+ isn't genuinely significant, drop it. Quality over quantity.
+2. BUSINESS — 3 business/market stories a professional should know. Include a market snapshot.
+3. NYC — 2 NYC stories worth knowing.
 
 For EACH story:
-- headline: plain factual title, no hype
-- why: ONE sentence, max 15 words — why does this matter to a smart reader? Lead with the consequence, not the event.
+- headline: plain and factual
+- why: one punchy clause (max 12 words) — lead with the consequence, not the event
 - source: publication name
 
-Bad why: "The Federal Reserve held interest rates steady at its latest meeting on Wednesday."
-Good why: "Signals June cut — markets rally, mortgage rates may drop by summer."
+Bad why: "The Fed held rates steady at its meeting."
+Good why: "June cut now likely — mortgage relief possible by summer."
 
-Return valid JSON in this exact shape:
+Return valid JSON:
 {{
   "date": "March 10, 2026",
-  "global": [
+  "top": [
     {{"headline": "...", "why": "...", "source": "..."}}
   ],
   "business": {{
@@ -74,7 +76,7 @@ Return valid JSON in this exact shape:
   ]
 }}
 
-Be accurate, concise, and factual. Use only information from today's web search results.
+Only use information from today's web search. Be accurate.
 """
 
 
@@ -146,7 +148,8 @@ HTML_TEMPLATE = """\
   .market-item .label {{ font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #aaa; }}
   .market-item .val {{ font-size: 13px; font-weight: 600; color: #111; margin-top: 2px; }}
   .footer {{ padding: 12px 28px; text-align: center; font-size: 10px; color: #ccc; }}
-  .global .section-label {{ color: #2563eb; }}
+  .top .section-label {{ color: #111; }}
+  .top .story b {{ font-size: 14.5px; }}
   .biz .section-label {{ color: #059669; }}
   .nyc .section-label {{ color: #dc2626; }}
 </style>
@@ -157,9 +160,9 @@ HTML_TEMPLATE = """\
     <h1>Daily Briefing</h1>
     <p>{date} &nbsp;·&nbsp; 2 min read</p>
   </div>
-  <div class="section global">
-    <p class="section-label">🌍 World</p>
-    {global_stories}
+  <div class="section top">
+    <p class="section-label">⚡ Top Stories</p>
+    {top_stories}
   </div>
   <div class="section biz">
     <p class="section-label">📈 Business &amp; Markets</p>
@@ -194,9 +197,9 @@ def render_story(story: dict, idx: int, total: int) -> str:
 
 
 def render_html(data: dict) -> str:
-    global_html = "".join(
-        render_story(s, i, len(data["global"]))
-        for i, s in enumerate(data["global"])
+    top_html = "".join(
+        render_story(s, i, len(data["top"]))
+        for i, s in enumerate(data["top"])
     )
 
     biz_stories = data["business"]["stories"]
@@ -212,7 +215,7 @@ def render_html(data: dict) -> str:
 
     return HTML_TEMPLATE.format(
         date=data.get("date", datetime.now().strftime("%B %d, %Y")),
-        global_stories=global_html,
+        top_stories=top_html,
         biz_stories=biz_html,
         nyc_stories=nyc_html,
         sp500=markets.get("sp500", "N/A"),
