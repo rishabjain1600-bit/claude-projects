@@ -37,29 +37,31 @@ SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
 # ---------------------------------------------------------------------------
 
 RESEARCH_PROMPT = """\
-Today is {date}. You are a sharp news editor compiling a daily briefing.
+Today is {date}. You are an ultra-concise news editor. Every word must earn its place.
 
-Search the web and gather the following for today:
+Search the web for today's news and return exactly:
 
-1. GLOBAL NEWS — 5 of the most important global news stories happening right now.
-2. BUSINESS & MARKETS — 5 key business/financial stories (think Morning Brew style).
-   Also include a quick snapshot: S&P 500, Nasdaq, Bitcoin price/direction if available.
-3. NYC NEWS — 4 notable New York City stories (local politics, transit, culture, crime, development).
+1. GLOBAL NEWS — 5 stories
+2. BUSINESS & MARKETS — 5 stories + market snapshot (S&P 500, Nasdaq, Bitcoin)
+3. NYC NEWS — 4 stories
 
-For EACH story provide:
-- Headline (punchy, clear)
-- 1–2 sentence summary (the essential who/what/why — no fluff)
-- Source name (e.g. Reuters, Bloomberg, NYT)
+For EACH story:
+- headline: plain factual title, no hype
+- why: ONE sentence, max 15 words — why does this matter to a smart reader? Lead with the consequence, not the event.
+- source: publication name
 
-Return your answer as valid JSON in this exact shape:
+Bad why: "The Federal Reserve held interest rates steady at its latest meeting on Wednesday."
+Good why: "Signals June cut — markets rally, mortgage rates may drop by summer."
+
+Return valid JSON in this exact shape:
 {{
   "date": "March 10, 2026",
   "global": [
-    {{"headline": "...", "summary": "...", "source": "..."}}
+    {{"headline": "...", "why": "...", "source": "..."}}
   ],
   "business": {{
     "stories": [
-      {{"headline": "...", "summary": "...", "source": "..."}}
+      {{"headline": "...", "why": "...", "source": "..."}}
     ],
     "markets": {{
       "sp500": "...",
@@ -68,7 +70,7 @@ Return your answer as valid JSON in this exact shape:
     }}
   }},
   "nyc": [
-    {{"headline": "...", "summary": "...", "source": "..."}}
+    {{"headline": "...", "why": "...", "source": "..."}}
   ]
 }}
 
@@ -124,24 +126,26 @@ HTML_TEMPLATE = """\
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Daily Briefing</title>
 <style>
-  body {{ margin: 0; padding: 0; background: #f4f4f4; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; color: #1a1a1a; }}
-  .wrapper {{ max-width: 620px; margin: 24px auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }}
-  .header {{ background: #111111; padding: 28px 32px 22px; }}
-  .header h1 {{ margin: 0; color: #ffffff; font-size: 22px; font-weight: 700; letter-spacing: -0.3px; }}
-  .header p {{ margin: 4px 0 0; color: #888888; font-size: 13px; }}
-  .section {{ padding: 24px 32px; border-bottom: 1px solid #eeeeee; }}
-  .section:last-child {{ border-bottom: none; }}
-  .section-label {{ font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: #888; margin: 0 0 16px; }}
-  .story {{ margin-bottom: 18px; }}
+  body {{ margin: 0; padding: 0; background: #f0f0f0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; color: #1a1a1a; }}
+  .wrapper {{ max-width: 580px; margin: 20px auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.07); }}
+  .header {{ background: #111; padding: 20px 28px 16px; }}
+  .header h1 {{ margin: 0; color: #fff; font-size: 18px; font-weight: 700; letter-spacing: -0.2px; }}
+  .header p {{ margin: 2px 0 0; color: #777; font-size: 12px; }}
+  .section {{ padding: 18px 28px; border-bottom: 1px solid #f0f0f0; }}
+  .section-label {{ font-size: 9px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; margin: 0 0 12px; }}
+  .story {{ display: flex; gap: 10px; align-items: baseline; margin-bottom: 9px; }}
   .story:last-child {{ margin-bottom: 0; }}
-  .story h3 {{ margin: 0 0 4px; font-size: 15px; font-weight: 600; color: #111111; line-height: 1.35; }}
-  .story p {{ margin: 0; font-size: 13.5px; color: #444444; line-height: 1.55; }}
-  .story .src {{ font-size: 11px; color: #aaaaaa; margin-top: 3px; }}
-  .divider {{ height: 1px; background: #f0f0f0; margin: 14px 0; }}
-  .markets {{ background: #f8f8f8; border-radius: 6px; padding: 14px 16px; margin-top: 18px; display: flex; gap: 24px; }}
-  .market-item {{ font-size: 12px; color: #555; }}
-  .market-item strong {{ display: block; font-size: 13px; color: #111; }}
-  .footer {{ background: #f9f9f9; padding: 16px 32px; text-align: center; font-size: 11px; color: #aaaaaa; }}
+  .bullet {{ color: #ccc; font-size: 13px; flex-shrink: 0; }}
+  .content {{ flex: 1; }}
+  .content b {{ font-size: 13.5px; font-weight: 600; color: #111; line-height: 1.3; }}
+  .content span {{ font-size: 12.5px; color: #666; margin-left: 5px; }}
+  .content .src {{ font-size: 10.5px; color: #bbb; margin-left: 4px; }}
+  .markets {{ display: flex; gap: 0; margin-top: 14px; border: 1px solid #f0f0f0; border-radius: 6px; overflow: hidden; }}
+  .market-item {{ flex: 1; padding: 10px 14px; border-right: 1px solid #f0f0f0; }}
+  .market-item:last-child {{ border-right: none; }}
+  .market-item .label {{ font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #aaa; }}
+  .market-item .val {{ font-size: 13px; font-weight: 600; color: #111; margin-top: 2px; }}
+  .footer {{ padding: 12px 28px; text-align: center; font-size: 10px; color: #ccc; }}
   .global .section-label {{ color: #2563eb; }}
   .biz .section-label {{ color: #059669; }}
   .nyc .section-label {{ color: #dc2626; }}
@@ -151,23 +155,23 @@ HTML_TEMPLATE = """\
 <div class="wrapper">
   <div class="header">
     <h1>Daily Briefing</h1>
-    <p>{date} &nbsp;·&nbsp; ~3 min read</p>
+    <p>{date} &nbsp;·&nbsp; 2 min read</p>
   </div>
   <div class="section global">
-    <p class="section-label">🌍 Global News</p>
+    <p class="section-label">🌍 World</p>
     {global_stories}
   </div>
   <div class="section biz">
     <p class="section-label">📈 Business &amp; Markets</p>
     {biz_stories}
     <div class="markets">
-      <div class="market-item"><strong>S&amp;P 500</strong>{sp500}</div>
-      <div class="market-item"><strong>Nasdaq</strong>{nasdaq}</div>
-      <div class="market-item"><strong>Bitcoin</strong>{bitcoin}</div>
+      <div class="market-item"><div class="label">S&amp;P 500</div><div class="val">{sp500}</div></div>
+      <div class="market-item"><div class="label">Nasdaq</div><div class="val">{nasdaq}</div></div>
+      <div class="market-item"><div class="label">Bitcoin</div><div class="val">{bitcoin}</div></div>
     </div>
   </div>
   <div class="section nyc">
-    <p class="section-label">🗽 New York City</p>
+    <p class="section-label">🗽 NYC</p>
     {nyc_stories}
   </div>
   <div class="footer">Generated with Claude · {date}</div>
@@ -178,13 +182,14 @@ HTML_TEMPLATE = """\
 
 
 def render_story(story: dict, idx: int, total: int) -> str:
-    divider = '<div class="divider"></div>' if idx < total - 1 else ""
     return (
         f'<div class="story">'
-        f'<h3>{story["headline"]}</h3>'
-        f'<p>{story["summary"]}</p>'
-        f'<p class="src">{story["source"]}</p>'
-        f"</div>{divider}"
+        f'<span class="bullet">·</span>'
+        f'<div class="content">'
+        f'<b>{story["headline"]}</b>'
+        f'<span>{story["why"]}</span>'
+        f'<span class="src">{story["source"]}</span>'
+        f'</div></div>'
     )
 
 
