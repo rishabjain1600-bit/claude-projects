@@ -1,5 +1,14 @@
+# Credentials — never commit
 .env
-*.log
+
+# Python
+venv/
 __pycache__/
 *.pyc
-sample_newsletter.html
+*.pyo
+
+# Logs
+newsletter.log
+
+# macOS
+.DS_Store
