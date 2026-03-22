@@ -22,4 +22,13 @@ Claude is configured as a PM for the job search: it extracts JD keywords, maps t
 
 ---
 
+### [Agent Factory](./agent-factory/)
+> A prototype exploring whether AI agents can convert website friction into completed actions — and whether that's a viable business.
+
+A working real-time AI checkout recovery system: injects a script tag into a website, detects visitor friction (idle at checkout, sizing hesitation), activates a Claude-powered agent, and executes multi-step plans on the visitor's behalf via real browser clicks. Built alongside a full competitive research sprint across 18 companies. Concluded with a documented decision not to pursue further — the white space is real but the window is short and the moat is hard to build before foundation model companies close the gap.
+
+**Stack:** Next.js 14 · TypeScript · Anthropic API · Tailwind · SSE · npm workspaces
+
+---
+
 Built with [Claude Code](https://claude.ai/claude-code) · [Anthropic API](https://docs.anthropic.com)

@@ -1,0 +1,17 @@
+{
+  "name": "stealthproject",
+  "version": "0.0.1",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:dashboard": "npm run dev --workspace=apps/dashboard",
+    "dev:store": "npm run dev --workspace=apps/demo-store",
+    "dev": "concurrently \"npm run dev:dashboard\" \"npm run dev:store\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
